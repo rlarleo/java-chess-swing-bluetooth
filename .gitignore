@@ -41,3 +41,4 @@ nbdist/
 # Logs
 ######################
 *.log*
+/.metadata/
