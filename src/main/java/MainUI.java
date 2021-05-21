@@ -246,6 +246,7 @@ public class MainUI extends JFrame {
             if (e.getSource() == newgame) {
                 mainpanel.setVisible(false);
                 subpanel.setVisible(true);
+
             }
 
             if (e.getSource() == options) {
@@ -439,46 +440,66 @@ public class MainUI extends JFrame {
 
         logo.setIcon(bluechess);
         logo.setText(null);
-        
-        // setMenu 메소드로 중복 제거
-        setMenu(newgame, newgame1, "New Game");
+
+        newgame.setIcon(newgame1);
+        newgame.setText(null);
+        newgame.setToolTipText("New Game");
+
+
         newgame.addMouseListener(handler);
-        
-        setMenu(options, options1, "Options");
+
+        options.setIcon(options1);
+        options.setText(null);
+        options.setToolTipText("Options");
+
         options.addMouseListener(handler);
-        
-        setMenu(help, help1, "Help");
+
+        help.setIcon(help1);
+        help.setText(null);
+        help.setToolTipText("Help");
+
         help.addMouseListener(handler);
 
-        setMenu(about, about1, "About Game");
+        about.setIcon(about1);
+        about.setText(null);
+        about.setToolTipText("About Game");
+
         about.addMouseListener(handler);
-        
-        setMenu(exit, exit1, "Exit From Game");
+
+        exit.setIcon(exit1);
+        exit.setText(null);
+        exit.setToolTipText("Exit From Game");
+
         exit.addMouseListener(handler);
 
-        setMenu(single, single1, "Play in same device");
+        single.setIcon(single1);
+        single.setText(null);
+        single.setToolTipText("Play in same device");
+
         single.addMouseListener(handler);
 
-        setMenu(join, join1, "Join to play through BLUETOOTH");
+        join.setIcon(join1);
+        join.setText(null);
+        join.setToolTipText("Join to play through BLUETOOTH");
+
         join.addMouseListener(handler);
 
-        setMenu(host, host1, "Host to play through BLUETOOTH");
+        host.setIcon(host1);
+        host.setText(null);
+        host.setToolTipText("Host to play through BLUETOOTH");
+
         host.addMouseListener(handler);
 
-        setMenu(back, back1, "Exit From Game");
-        back.addMouseListener(handler);
+        back.setIcon(back1);
+        back.setText(null);
+        back.setToolTipText("Back to MainMenu");
 
+        back.addMouseListener(handler);
 
         Point menuCenter = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         //adjust the bound of frame by a simple logic
         //to center the frame window
-        //frame window 메소드 추출
-        SetFrameWindow(menuCenter);
-
-    }
-
-	private void SetFrameWindow(Point menuCenter) {
-		int menuWindowWidth = 300;
+        int menuWindowWidth = 300;
         int menuWindowHeight = 450;
         setBounds(menuCenter.x - menuWindowWidth / 2, menuCenter.y - menuWindowHeight / 2, menuWindowWidth, menuWindowHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -486,12 +507,6 @@ public class MainUI extends JFrame {
         mainpanel.setVisible(true);
         subpanel.setVisible(false);
         setVisible(true);
-	}
 
-
-	private void setMenu(JLabel menuName, Icon menuIcon, String tipText) {
-		menuName.setIcon(menuIcon);
-		menuName.setText(null);
-		menuName.setToolTipText(tipText);
-	}
+    }
 }
