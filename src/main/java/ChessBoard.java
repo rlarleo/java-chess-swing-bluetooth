@@ -28,7 +28,6 @@ public class ChessBoard extends Canvas {
 
         }
 
-        //이게 뭐하는거지..??
         g.setColor(new Color(51, 51, 51));
         g.fillRect(50, 450, 450, 50); //Paint over the current status text
 
