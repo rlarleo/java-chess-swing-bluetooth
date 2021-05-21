@@ -440,6 +440,7 @@ public class MainUI extends JFrame {
         logo.setIcon(bluechess);
         logo.setText(null);
         
+        // setMenu 메소드로 중복 제거
         setMenu(newgame, newgame1, "New Game");
         newgame.addMouseListener(handler);
         
@@ -464,14 +465,20 @@ public class MainUI extends JFrame {
         setMenu(host, host1, "Host to play through BLUETOOTH");
         host.addMouseListener(handler);
 
-        setMenu(back, back1, "Host to play through BLUETOOTH");
+        setMenu(back, back1, "Exit From Game");
         back.addMouseListener(handler);
 
 
         Point menuCenter = GraphicsEnvironment.getLocalGraphicsEnvironment().getCenterPoint();
         //adjust the bound of frame by a simple logic
         //to center the frame window
-        int menuWindowWidth = 300;
+        //frame window 메소드 추출
+        SetFrameWindow(menuCenter);
+
+    }
+
+	private void SetFrameWindow(Point menuCenter) {
+		int menuWindowWidth = 300;
         int menuWindowHeight = 450;
         setBounds(menuCenter.x - menuWindowWidth / 2, menuCenter.y - menuWindowHeight / 2, menuWindowWidth, menuWindowHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -479,8 +486,7 @@ public class MainUI extends JFrame {
         mainpanel.setVisible(true);
         subpanel.setVisible(false);
         setVisible(true);
-
-    }
+	}
 
 
 	private void setMenu(JLabel menuName, Icon menuIcon, String tipText) {
