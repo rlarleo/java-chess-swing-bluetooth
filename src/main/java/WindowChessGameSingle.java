@@ -51,7 +51,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 
     }
 
-    //reset playermatrix and pieces matrix
+    //reset player matrix and pieces matrix
     private void resetBoard() {
         System.err.println("windowchessboard, resetboard() being running");
         hasWon = false;
@@ -59,24 +59,19 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         strStatusMsg = getPlayerMsg();
         cellMatrix.resetMatrix();
         repaint();
-
     }
 
     public void setupImages(ImageIcon[] imgWhite, ImageIcon[] imgBlack) {
-
         imgPlayer[0] = imgWhite;
         imgPlayer[1] = imgBlack;
         resetBoard();
-
     }
 
     public void setNames(String strPlayer1Name, String strPlayer2Name) {
-
         strPlayerName[0] = strPlayer1Name;
         strPlayerName[1] = strPlayer2Name;
         strStatusMsg = getPlayerMsg();
         repaint();
-
     }
 
     public String[] getMovementRecord() {
@@ -94,25 +89,18 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             int rowCells = currentInstruction.getRowCells();
             int columnCells = currentInstruction.getColumnCells();
             for (int row = 0; row < (paintStartRow + rowCells); row++) {
-
                 for (int column = 0; column < (paintStartColumn + columnCells); column++) {
-
                     int playerCell = cellMatrix.getPlayerCell(row, column);
                     int pieceCell = cellMatrix.getPieceCell(row, column);
 
                     if (playerCell != 0) {
-
                         try {
                             g.drawImage((imgPlayer[playerCell - 1][pieceCell].getImage()), ((column + 1) * 50) - 45, ((row + 1) * 50) - 45, this);
                         } catch (ArrayIndexOutOfBoundsException e) {
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         if (isDragging) {
@@ -131,19 +119,17 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         System.err.println("windowchessboard, newGame() being running");
         firstTime = false;
         resetBoard();
-
     }
 
     private void checkMove(int desRow, int desColumn) {
-
         System.err.println("windowchessboard, Checkmove() being running");
         boolean legalMove = false;
 
-//if moved onto own piece
+        //if moved onto own piece
         if (cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
-//find the move is valid or not
+        	//find the move is valid or not
             switch (pieceBeingDragged) {
 
                 case 0:
@@ -164,9 +150,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 case 5:
                     legalMove = kingObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
-
             }
-
         }
 
         //if legal
@@ -201,9 +185,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                     newDesRow = kingObject.getDesRow();
                     newDesColumn = kingObject.getDesColumn();
                     break;
-
             }
-
 
             pplayer = cellMatrix.getPlayerCell(newDesRow, newDesColumn);
             ppiece = cellMatrix.getPieceCell(newDesRow, newDesColumn);
@@ -243,7 +225,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                         currentPlayer = 1;
                     }
 
-
                     strStatusMsg = getPlayerMsg();
 
                 }
@@ -279,23 +260,19 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 case 5:
                     strStatusMsg = kingObject.getErrorMsg();
                     break;
-
             }
-
             unsucessfullDrag();
-
         }
-
     }
 
     private boolean isCheckMate(int curPlayer) {
-
         kr = cellMatrix.getKingRow(curPlayer);
         kc = cellMatrix.getKingCol(curPlayer);
 
         boolean legalMove;
         boolean safe;
-        boolean b1 = true, b2 = true, b3 = true, b4 = true, b5 = true, b6 = true, b7 = true, b8 = true;
+        boolean case_1 = true, case_2 = true, case_3 = true, case_4 = true, 
+        		case_5 = true, case_6 = true, case_7 = true, case_8 = true;
         int newkr;
         int newkc;
 
@@ -305,9 +282,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b1 = true;
+                case_1 = true;
             } else {
-                b1 = false;
+                case_1 = false;
             }
         }
 
@@ -317,9 +294,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b2 = true;
+                case_2 = true;
             } else {
-                b2 = false;
+                case_2 = false;
             }
         }
 
@@ -329,9 +306,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b3 = true;
+                case_3 = true;
             } else {
-                b3 = false;
+                case_3 = false;
             }
         }
 
@@ -341,9 +318,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b4 = true;
+                case_4 = true;
             } else {
-                b4 = false;
+                case_4 = false;
             }
         }
 
@@ -353,9 +330,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b5 = true;
+                case_5 = true;
             } else {
-                b5 = false;
+                case_5 = false;
             }
         }
 
@@ -365,9 +342,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b6 = true;
+                case_6 = true;
             } else {
-                b6 = false;
+                case_6 = false;
             }
         }
 
@@ -377,9 +354,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b7 = true;
+                case_7 = true;
             } else {
-                b7 = false;
+                case_7 = false;
             }
         }
 
@@ -389,17 +366,16 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
             if (!legalMove || !safe) {
-                b8 = true;
+                case_8 = true;
             } else {
-                b8 = false;
+                case_8 = false;
             }
         }
 
 
-        if (b1 && b2 && b3 && b4 && b5 && b6 && b7 && b8) {
+        if (case_1 && case_2 && case_3 && case_4 && case_5 && case_6 && case_7 && case_8) {
             return true;
         }
-
 
         return false;
     }
@@ -408,7 +384,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         System.err.println("unsuccessfulDrag");
         cellMatrix.setPieceCell(startRow, startColumn, pieceBeingDragged);
         cellMatrix.setPlayerCell(startRow, startColumn, currentPlayer);
-
     }
 
     private void updatePaintInstructions(int desRow, int desColumn) {
@@ -417,7 +392,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         vecPaintInstructions.addElement(currentInstruction);
         currentInstruction = new PaintInstruction(desRow, desColumn);
         vecPaintInstructions.addElement(currentInstruction);
-
     }
 
     public void mouseClicked(MouseEvent e) {
@@ -433,15 +407,15 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     public void mousePressed(MouseEvent e) {
         System.err.println("windowchessboard, mousepressed() being running");
         if (!hasWon && !firstTime) {
+            int xTouchedLocation = e.getX();
+            int yTouchedLocation = e.getY();
 
-            int x = e.getX();
-            int y = e.getY();
-
-            if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+            final boolean isTouchInside = (xTouchedLocation > 5 && xTouchedLocation < 405) && (yTouchedLocation > 5 && yTouchedLocation < 405);
+			if (isTouchInside) //in the correct bounds
             {
                 //find startRow and StartColumn from where the player clicks on the board
-                startRow = findWhichTileSelected(y);
-                startColumn = findWhichTileSelected(x);
+                startRow = findWhichTileSelected(yTouchedLocation);
+                startColumn = findWhichTileSelected(xTouchedLocation);
                 System.err.println("START  " + startRow + " ," + startColumn);
                 if (cellMatrix.getPlayerCell(startRow, startColumn) == currentPlayer) {
 
@@ -469,7 +443,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         }
 
         if (isDragging) {
-
             isDragging = false;
 
             int desRow = findWhichTileSelected(currentY);
@@ -492,27 +465,25 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             if (isCheckMate(currentPlayer)) {
                 strStatusMsg = "CHECKMATE";
             }
-
             repaint();
-
         }
-
     }
 
     public void mouseDragged(MouseEvent e) {
         drag = true;
         if (isDragging) {
 
-            int x = e.getX();
-            int y = e.getY();
+            int xTouchedLocation = e.getX();
+            int yTouchedLocation = e.getY();
 
-            if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+            final boolean isTouchInside = (xTouchedLocation > 5 && xTouchedLocation < 405) && (yTouchedLocation > 5 && yTouchedLocation < 405);
+			if (isTouchInside) //in the correct bounds
             {
 
                 if (refreshCounter >= refreshRate) {
 
-                    currentX = x;
-                    currentY = y;
+                    currentX = xTouchedLocation;
+                    currentY = yTouchedLocation;
                     refreshCounter = 0;
                     int desRow = findWhichTileSelected(currentY);
                     int desColumn = findWhichTileSelected(currentX);
@@ -530,9 +501,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 unsucessfullDrag();
                 repaint();
             }
-
         }
-
     }
 
     public void mouseMoved(MouseEvent e) {
