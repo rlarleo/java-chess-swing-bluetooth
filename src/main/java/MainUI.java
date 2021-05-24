@@ -492,7 +492,6 @@ public class MainUI extends JFrame {
         //to center the frame window
         //frame window 메소드 추출
         SetFrameWindow(menuCenter);
-
     }
 
 	private void SetFrameWindow(Point menuCenter) {
