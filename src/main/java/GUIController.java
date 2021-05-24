@@ -1,6 +1,5 @@
 import javax.swing.JFrame;
 
-
 public class GUIController{
 	
 	public GUISingle singleChessWindow;
