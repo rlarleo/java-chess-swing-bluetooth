@@ -283,7 +283,7 @@ public class MainUI extends JFrame {
                     
                     //Extract method
                     createGameBoard(main, GUIController.BTChessWindow);
-
+                    
                 } catch (Exception ex) {
                     Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
