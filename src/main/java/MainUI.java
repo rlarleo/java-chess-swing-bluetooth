@@ -231,6 +231,7 @@ public class MainUI extends JFrame {
     protected Icon back2;
 
     private class MouseHandler implements MouseListener {
+        final GUIController GUIController = new GUIController();
 
         public void mouseClicked(MouseEvent e) {
             //throw new UnsupportedOperationException("Not supported yet.");
@@ -262,29 +263,27 @@ public class MainUI extends JFrame {
             }
 
             if (e.getSource() == single) {
-                JFrame main = new JFrame("Blue Chess Game Window"); //Title
-                main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                //Extract method
+                JFrame main = makeTitle();
+                
+                //Facade Pattern     
+                GUIController.makeSingleChessWindow(main);
 
-                GUISingle chessWindow = new GUISingle();
-                main.add(chessWindow);//creates game board
-                chessWindow.createGUI(main);
-                main.setSize(680, 580);
-                main.setResizable(false);
-                main.setVisible(true);
-                dispose();
+                //Extract method
+                createGameBoard(main, GUIController.singleChessWindow);
             }
 
             if (e.getSource() == join) {
                 try {
-                    JFrame main = new JFrame("Blue Chess Game Window"); //Title
-                    main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    GUIBT chessWindow = new GUIBT(false);
-                    main.add(chessWindow); //creates game board
-                    chessWindow.createGUI(main);
-                    main.setSize(680, 580);
-                    main.setResizable(false);
-                    main.setVisible(true);
-                    dispose();
+                    //Extract method
+                    JFrame main = makeTitle();
+                    
+                    //Facade Pattern
+                    GUIController.makeBTChessWindow(main);
+                    
+                    //Extract method
+                    createGameBoard(main, GUIController.BTChessWindow);
+                    
                 } catch (Exception ex) {
                     Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -292,15 +291,14 @@ public class MainUI extends JFrame {
 
             if (e.getSource() == host) {
                 try {
-                    JFrame main = new JFrame("Blue Chess Game Window"); //Title
-                    main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                    GUIBT chessWindow = new GUIBT(true);
-                    main.add(chessWindow); //creates game board
-                    chessWindow.createGUI(main);
-                    main.setSize(680, 580);
-                    main.setResizable(false);
-                    main.setVisible(true);
-                    dispose();
+                    //Extract method
+                    JFrame main = makeTitle();
+                    
+                    //Facade Pattern
+                    GUIController.makeBTChessWindow(main);
+                    
+                    //Extract method
+                    createGameBoard(main, GUIController.BTChessWindow);
                 } catch (Exception ex) {
                     Logger.getLogger(MainUI.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -313,6 +311,26 @@ public class MainUI extends JFrame {
             }
         }
 
+		private JFrame makeTitle() {
+			JFrame main = new JFrame("Blue Chess Game Window"); //Title
+			main.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			return main;
+		}
+
+		private void createGameBoard(JFrame main, GUISingle chessWindow) {
+			main.add(chessWindow);//creates game board
+			main.setSize(680, 580);
+			main.setResizable(false);
+			main.setVisible(true);
+			dispose();
+		}
+		private void createGameBoard(JFrame main, GUIBT chessWindow) {
+			main.add(chessWindow);//creates game board
+			main.setSize(680, 580);
+			main.setResizable(false);
+			main.setVisible(true);
+			dispose();
+		}
         public void mouseEntered(MouseEvent e) {
             //throw new UnsupportedOperationException("Not supported yet.");
 
@@ -474,7 +492,6 @@ public class MainUI extends JFrame {
         //to center the frame window
         //frame window 메소드 추출
         SetFrameWindow(menuCenter);
-
     }
 
 	private void SetFrameWindow(Point menuCenter) {
