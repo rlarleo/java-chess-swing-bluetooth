@@ -27,7 +27,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     private final Bishop bishopObject = new Bishop();
     private final Queen queenObject = new Queen();
     private final King kingObject = new King();
-    private int kr, kc;
+    private int kingRow, kingCol;
     private int pplayer = 1, ppiece = 1;
     private int moveCount = 0;
     private final String[] moveRecord = new String[500];
@@ -36,7 +36,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         super();
         this.addMouseListener(this);
         this.addMouseMotionListener(this);
-
     }
 
     private String getPlayerMsg() {
@@ -48,7 +47,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         } else {
             return "" + strPlayerName[currentPlayer - 1] + " move";
         }
-
     }
 
     //reset player matrix and pieces matrix
@@ -131,7 +129,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         } else {
         	//find the move is valid or not
             switch (pieceBeingDragged) {
-
                 case 0:
                     legalMove = pawnObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix(), currentPlayer);
                     break;
@@ -160,7 +157,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             int newDesColumn = 7;
 
             switch (pieceBeingDragged) {
-
                 case 0:
                     newDesRow = pawnObject.getDesRow();
                     newDesColumn = pawnObject.getDesColumn();
@@ -190,33 +186,27 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             pplayer = cellMatrix.getPlayerCell(newDesRow, newDesColumn);
             ppiece = cellMatrix.getPieceCell(newDesRow, newDesColumn);
 
-
             cellMatrix.setPlayerCell(newDesRow, newDesColumn, currentPlayer);
             cellMatrix.setPieceCell(newDesRow, newDesColumn, pieceBeingDragged);
 
-            kr = cellMatrix.getKingRow(currentPlayer);
-            kc = cellMatrix.getKingCol(currentPlayer);
+            kingRow = cellMatrix.getKingRow(currentPlayer);
+            kingCol = cellMatrix.getKingCol(currentPlayer);
 
-            System.err.println("KingRow= " + kr + " KingCol= " + kc);
-            kingSafe = cellMatrix.isKingSafe(currentPlayer, kr, kc);
+            System.err.println("KingRow= " + kingRow + " KingCol= " + kingCol);
+            kingSafe = cellMatrix.isKingSafe(currentPlayer, kingRow, kingCol);
 
             if (kingSafe) {
                 System.err.println("King is Safe");
             } else {
                 System.err.println("King is NOT Safe");
             }
-
             if (kingSafe) {
                 cellMatrix.setPlayerCell(newDesRow, newDesColumn, currentPlayer);
                 cellMatrix.setPieceCell(newDesRow, newDesColumn, pieceBeingDragged);
-
                 if (cellMatrix.checkWinner(currentPlayer)) {
-
                     hasWon = true;
                     strStatusMsg = getPlayerMsg();
-
                 } else { //turn change
-
                     if (currentPlayer == 1) {
                         moveRecord[moveCount++] = strPlayerName[currentPlayer - 1] + ": " + startRow + "," + startColumn + "->" + desRow + "," + desColumn;
                         currentPlayer = 2;
@@ -226,7 +216,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                     }
 
                     strStatusMsg = getPlayerMsg();
-
                 }
             } else {
                 unsucessfullDrag();
@@ -237,11 +226,8 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 strStatusMsg = "" + strPlayerName[currentPlayer - 1] + ", Your King is checked";
                 repaint();
             }
-
         } else {
-
             switch (pieceBeingDragged) {
-
                 case 0:
                     strStatusMsg = pawnObject.getErrorMsg();
                     break;
@@ -266,48 +252,27 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     }
 
     private boolean isCheckMate(int curPlayer) {
-        kr = cellMatrix.getKingRow(curPlayer);
-        kc = cellMatrix.getKingCol(curPlayer);
+        kingRow = cellMatrix.getKingRow(curPlayer);
+        kingCol = cellMatrix.getKingCol(curPlayer);
 
-        boolean legalMove;
-        boolean safe;
         boolean checkRight = true, checkDownRightDiagonal = true, checkDown = true, checkDownLeftDiagonal = true, 
         		checkLeft = true, checkUpperLeftDiagonal = true, checkUp = true, checkUpperRightDiagonal = true;
-        int newkr;
-        int newkc;
 
-//        newkr = kr + 1;
-//        newkc = kc;
-        checkRight = checkCases(curPlayer, checkRight, kr+1, kc); // 말의 오른쪽
+        checkRight = checkCases(curPlayer, checkRight, kingRow+1, kingCol); // 말의 오른쪽
 
-//        newkr = kr + 1;
-//        newkc = kc - 1;
-        checkDownRightDiagonal = checkCases(curPlayer, checkDownRightDiagonal, kr+1, kc-1); // 말의 우측 아래 대각선
+        checkDownRightDiagonal = checkCases(curPlayer, checkDownRightDiagonal, kingRow+1, kingCol-1); // 말의 우측 아래 대각선
 
-//        newkr = kr;
-//        newkc = kc - 1;
-        checkDown = checkCases(curPlayer, checkDown, kr, kc-1); // 말의 아래쪽
+        checkDown = checkCases(curPlayer, checkDown, kingRow, kingCol-1); // 말의 아래쪽
 
-//        newkr = kr - 1;
-//        newkc = kc - 1;
-        checkDownLeftDiagonal = checkCases(curPlayer, checkDownLeftDiagonal, kr-1, kc-1); // 말의 좌측 아래 대각선
+        checkDownLeftDiagonal = checkCases(curPlayer, checkDownLeftDiagonal, kingRow-1, kingCol-1); // 말의 좌측 아래 대각선
 
-//        newkr = kr - 1;
-//        newkc = kc;
-        checkLeft = checkCases(curPlayer, checkLeft, kr-1, kc); // 말의 왼쪽
+        checkLeft = checkCases(curPlayer, checkLeft, kingRow-1, kingCol); // 말의 왼쪽
 
-//        newkr = kr - 1;
-//        newkc = kc + 1;
-        checkUpperLeftDiagonal = checkCases(curPlayer, checkUpperLeftDiagonal, kr-1, kc+1); // 말의 좌측 위 대각선
+        checkUpperLeftDiagonal = checkCases(curPlayer, checkUpperLeftDiagonal, kingRow-1, kingCol+1); // 말의 좌측 위 대각선
 
-//        newkr = kr;
-//        newkc = kc + 1;
-        checkUp = checkCases(curPlayer, checkUp, kr, kc+1); // 말의 위쪽
+        checkUp = checkCases(curPlayer, checkUp, kingRow, kingCol+1); // 말의 위쪽
 
-//        newkr = kr + 1;
-//        newkc = kc + 1;
-        checkUpperRightDiagonal = checkCases(curPlayer, checkUpperRightDiagonal, kr+1, kc+1); // 말의 우측 위 대각선
-
+        checkUpperRightDiagonal = checkCases(curPlayer, checkUpperRightDiagonal, kingRow+1, kingCol+1); // 말의 우측 위 대각선
 
         if (checkRight && checkDownRightDiagonal && checkDown && checkDownLeftDiagonal && 
         		checkLeft && checkUpperLeftDiagonal && checkUp && checkUpperRightDiagonal) {
@@ -316,12 +281,12 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         return false;
     }
 
-	private boolean checkCases(int curPlayer, boolean checkCase, int newkr, int newkc) {
+	private boolean checkCases(int curPlayer, boolean checkCase, int newKingRow, int newKingCol) {
 		boolean legalMove;
 		boolean safe;
-		if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
+		if (newKingRow >= 0 && newKingCol >= 0 && newKingRow <= 7 && newKingCol <= 8) {
+            legalMove = kingObject.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
+            safe = cellMatrix.isKingSafe(curPlayer, newKingRow, newKingCol);
             if (!legalMove || !safe) {
                 checkCase = true;
             } else {
@@ -378,11 +343,8 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 } else {
                     isDragging = false;
                 }
-
             }
-
         }
-
     }
 
     public void mouseReleased(MouseEvent e) {
@@ -400,11 +362,11 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             int desColumn = findWhichTileSelected(currentX);
             checkMove(desRow, desColumn);
 
-            kr = cellMatrix.getKingRow(currentPlayer);
-            kc = cellMatrix.getKingCol(currentPlayer);
+            kingRow = cellMatrix.getKingRow(currentPlayer);
+            kingCol = cellMatrix.getKingCol(currentPlayer);
 
-            System.err.println("KingRow= " + kr + " KingCol= " + kc);
-            kingSafe = cellMatrix.isKingSafe(currentPlayer, kr, kc);
+            System.err.println("KingRow= " + kingRow + " KingCol= " + kingCol);
+            kingSafe = cellMatrix.isKingSafe(currentPlayer, kingRow, kingCol);
 
             if (kingSafe) {
                 System.err.println("King is Safe");
@@ -423,16 +385,13 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     public void mouseDragged(MouseEvent e) {
         drag = true;
         if (isDragging) {
-
             int xTouchedLocation = e.getX();
             int yTouchedLocation = e.getY();
 
             final boolean isTouchInside = (xTouchedLocation > 5 && xTouchedLocation < 405) && (yTouchedLocation > 5 && yTouchedLocation < 405);
 			if (isTouchInside) //in the correct bounds
             {
-
                 if (refreshCounter >= refreshRate) {
-
                     currentX = xTouchedLocation;
                     currentY = yTouchedLocation;
                     refreshCounter = 0;
