@@ -271,114 +271,65 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 
         boolean legalMove;
         boolean safe;
-        boolean case_1 = true, case_2 = true, case_3 = true, case_4 = true, 
-        		case_5 = true, case_6 = true, case_7 = true, case_8 = true;
+        boolean checkRight = true, checkDownRightDiagonal = true, checkDown = true, checkDownLeftDiagonal = true, 
+        		checkLeft = true, checkUpperLeftDiagonal = true, checkUp = true, checkUpperRightDiagonal = true;
         int newkr;
         int newkc;
 
-        newkr = kr + 1;
-        newkc = kc;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_1 = true;
-            } else {
-                case_1 = false;
-            }
-        }
+//        newkr = kr + 1;
+//        newkc = kc;
+        checkRight = checkCases(curPlayer, checkRight, kr+1, kc); // 말의 오른쪽
 
-        newkr = kr + 1;
-        newkc = kc - 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_2 = true;
-            } else {
-                case_2 = false;
-            }
-        }
+//        newkr = kr + 1;
+//        newkc = kc - 1;
+        checkDownRightDiagonal = checkCases(curPlayer, checkDownRightDiagonal, kr+1, kc-1); // 말의 우측 아래 대각선
 
-        newkr = kr;
-        newkc = kc - 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_3 = true;
-            } else {
-                case_3 = false;
-            }
-        }
+//        newkr = kr;
+//        newkc = kc - 1;
+        checkDown = checkCases(curPlayer, checkDown, kr, kc-1); // 말의 아래쪽
 
-        newkr = kr - 1;
-        newkc = kc - 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_4 = true;
-            } else {
-                case_4 = false;
-            }
-        }
+//        newkr = kr - 1;
+//        newkc = kc - 1;
+        checkDownLeftDiagonal = checkCases(curPlayer, checkDownLeftDiagonal, kr-1, kc-1); // 말의 좌측 아래 대각선
 
-        newkr = kr - 1;
-        newkc = kc;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_5 = true;
-            } else {
-                case_5 = false;
-            }
-        }
+//        newkr = kr - 1;
+//        newkc = kc;
+        checkLeft = checkCases(curPlayer, checkLeft, kr-1, kc); // 말의 왼쪽
 
-        newkr = kr - 1;
-        newkc = kc + 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_6 = true;
-            } else {
-                case_6 = false;
-            }
-        }
+//        newkr = kr - 1;
+//        newkc = kc + 1;
+        checkUpperLeftDiagonal = checkCases(curPlayer, checkUpperLeftDiagonal, kr-1, kc+1); // 말의 좌측 위 대각선
 
-        newkr = kr;
-        newkc = kc + 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_7 = true;
-            } else {
-                case_7 = false;
-            }
-        }
+//        newkr = kr;
+//        newkc = kc + 1;
+        checkUp = checkCases(curPlayer, checkUp, kr, kc+1); // 말의 위쪽
 
-        newkr = kr + 1;
-        newkc = kc + 1;
-        if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
-            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
-            if (!legalMove || !safe) {
-                case_8 = true;
-            } else {
-                case_8 = false;
-            }
-        }
+//        newkr = kr + 1;
+//        newkc = kc + 1;
+        checkUpperRightDiagonal = checkCases(curPlayer, checkUpperRightDiagonal, kr+1, kc+1); // 말의 우측 위 대각선
 
 
-        if (case_1 && case_2 && case_3 && case_4 && case_5 && case_6 && case_7 && case_8) {
+        if (checkRight && checkDownRightDiagonal && checkDown && checkDownLeftDiagonal && 
+        		checkLeft && checkUpperLeftDiagonal && checkUp && checkUpperRightDiagonal) {
             return true;
         }
-
         return false;
     }
+
+	private boolean checkCases(int curPlayer, boolean checkCase, int newkr, int newkc) {
+		boolean legalMove;
+		boolean safe;
+		if (newkr >= 0 && newkc >= 0 && newkr <= 7 && newkc <= 8) {
+            legalMove = kingObject.legalMove(kr, kc, newkr, newkc, cellMatrix.getPlayerMatrix());
+            safe = cellMatrix.isKingSafe(curPlayer, newkr, newkc);
+            if (!legalMove || !safe) {
+                checkCase = true;
+            } else {
+                checkCase = false;
+            }
+        }
+		return checkCase;
+	}
 
     private void unsucessfullDrag() {
         System.err.println("unsuccessfulDrag");
