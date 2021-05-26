@@ -353,17 +353,15 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         if (myturn) {
             System.err.println("windowchessboard, mousepressed() being running");
             if (!hasWon && !firstTime) {
+                int xTouchedLocation = e.getX();
+                int yTouchedLocation = e.getY();
 
-                int xLocation = e.getX();
-                int yLocation = e.getY();
-
-                boolean isxLocationInside = xLocation > 5 && xLocation < 405;
-				boolean isyLocationInside = yLocation > 5 && yLocation < 405;
-				if (isxLocationInside && isyLocationInside) //in the correct bounds
+				boolean isTouchedInside = (xTouchedLocation > 5 && xTouchedLocation < 405) && (yTouchedLocation > 5 && yTouchedLocation < 405);
+				if (isTouchedInside) //in the correct bounds
                 {
                     //find startRow and StartColumn from where the player clicks on the board
-                    startRow = findWhichTileSelected(yLocation);
-                    startColumn = findWhichTileSelected(xLocation);
+                    startRow = findWhichTileSelected(yTouchedLocation);
+                    startColumn = findWhichTileSelected(xTouchedLocation);
                     System.err.println("START  " + startRow + " ," + startColumn);
                     if (cellMatrix.getPlayerCell(startRow, startColumn) == currentPlayer) {
 

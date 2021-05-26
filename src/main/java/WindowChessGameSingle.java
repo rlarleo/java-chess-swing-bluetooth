@@ -126,7 +126,8 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         boolean legalMove = false;
 
         //if moved onto own piece
-        if (cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer) {
+        boolean isNotYourPiece = cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer;
+		if (isNotYourPiece) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
         	//find the move is valid or not
