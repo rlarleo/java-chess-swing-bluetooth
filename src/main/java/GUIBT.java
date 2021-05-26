@@ -31,12 +31,12 @@ public class GUIBT extends javax.swing.JPanel implements Runnable {
     public Container createGUI(JFrame mainApp) {
 
         app = mainApp;
-        game = new WindowChessGameBT(true);
-        game.setSize(new Dimension(410, 440));
+        windowChessGameController = new WindowChessGameController();
+        windowChessGameController.makeWindowChessGameBT(true);
 
         //change the names
-        game.setNames("Player1", "Player2");
-        chessPanel.add(game);
+        windowChessGameController.BTGameSetNames("Player1", "Player2");
+        chessPanel.add(windowChessGameController.windowChessGameBT);
         chessPanel.setBorder(BorderFactory.createEtchedBorder());
         //chessPanel.setVisible(true);
         chattext.setEnabled(false);
@@ -276,7 +276,7 @@ public class GUIBT extends javax.swing.JPanel implements Runnable {
             status.setText("Connected");
             chattext.setEnabled(true);
             send.setEnabled(true);
-            game.newGame(isServer, conn);
+            windowChessGameController.BTGameNewGame(isServer, conn);
         } else {
             status.setText("No devices Found");
 
@@ -309,13 +309,13 @@ public class GUIBT extends javax.swing.JPanel implements Runnable {
         }
         switch (command[0]) {
             case "makeEmpty":
-                game.processCommands(command);
+                windowChessGameController.processCommands(command);
                 break;
             case "playerCell":
-                game.processCommands(command);
+                windowChessGameController.processCommands(command);
                 break;
             case "pieceCell":
-                game.processCommands(command);
+                windowChessGameController.processCommands(command);
                 break;
             case "chat":
                 //chat process from here
@@ -356,7 +356,8 @@ public class GUIBT extends javax.swing.JPanel implements Runnable {
     private javax.swing.JLabel status;
     // End of variables declaration//GEN-END:variables
     protected final ImageIcon bluechess;
-    private WindowChessGameBT game;
+    //private WindowChessGameBT windowChessGameController.windowChessGameBT;
+    private WindowChessGameController windowChessGameController;
     private int chatCount;
     private final String[] chatString;
 }

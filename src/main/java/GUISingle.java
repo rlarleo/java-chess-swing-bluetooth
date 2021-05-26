@@ -14,8 +14,8 @@ public class GUISingle extends javax.swing.JPanel {
     }
 
     public Container createGUI(JFrame mainApp) {
-        mainChessBoard = new WindowChessGameSingle();
-        mainChessBoard.setSize(new Dimension(450, 450));
+    	windowChessGameController = new WindowChessGameController();
+    	windowChessGameController.makeWindowChessGameSingle();
 
         ImageIcon[] imgRed = new ImageIcon[6];
         ImageIcon[] imgBlue = new ImageIcon[6];
@@ -25,9 +25,9 @@ public class GUISingle extends javax.swing.JPanel {
             imgBlue[i] = new ImageIcon(getClass().getResource("images/" + strBluePieces[i]));
         }
         System.err.println(imgRed[1]);
-        mainChessBoard.setupImages(imgRed, imgBlue);
-        mainChessBoard.setNames("Player1", "Player2");
-        chessPanel.add(mainChessBoard);
+        windowChessGameController.SingleGameSetNames("Player1", "Player2");
+        windowChessGameController.setupImages(imgRed, imgBlue);
+        chessPanel.add(windowChessGameController.windowChessGameSingle);
         chessPanel.setVisible(true);
         chessPanel.setBorder(BorderFactory.createEtchedBorder());
         return chessPanel;
@@ -173,7 +173,7 @@ public class GUISingle extends javax.swing.JPanel {
 
     private void startButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_startButtonActionPerformed
         // TODO add your handling code here:
-        mainChessBoard.newGame();
+    	windowChessGameController.SingleGameNewGame();
         startButton.setText("Game Started");
         startButton.setEnabled(false);
 
@@ -199,7 +199,7 @@ public class GUISingle extends javax.swing.JPanel {
     private void jPanel3MouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel3MouseMoved
         // TODO add your handling code here:
         System.err.println("list updatedddddd");
-        jList1.setListData(mainChessBoard.getMovementRecord());
+        jList1.setListData(windowChessGameController.getMovementRecord());
 
     }//GEN-LAST:event_jPanel3MouseMoved
 
@@ -215,7 +215,7 @@ public class GUISingle extends javax.swing.JPanel {
         // TODO add your handling code here:
         player1 = jTextField1.getText();
         player2 = jTextField2.getText();
-        mainChessBoard.setNames(player1, player2);
+        windowChessGameController.SingleGameSetNames(player1, player2);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
@@ -239,7 +239,8 @@ public class GUISingle extends javax.swing.JPanel {
     private javax.swing.JButton startButton;
     // End of variables declaration//GEN-END:variables
     protected final ImageIcon bluechess;
-    private WindowChessGameSingle mainChessBoard;
+    //private WindowChessGameSingle mainChessBoard;
+    private WindowChessGameController windowChessGameController;
     private final String[] strRedPieces = {"whitePawn.png", "whiteRock.png", "whiteKnight.png", "whiteBishop.png", "whiteQueen.png", "whiteKing.png"};
     private final String[] strBluePieces = {"blackPawn.png", "blackRock.png", "blackKnight.png", "blackBishop.png", "blackQueen.png", "blackKing.png"};
     private String player1;
