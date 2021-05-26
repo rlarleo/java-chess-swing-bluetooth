@@ -32,6 +32,8 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
     private int pplayer = 1, ppiece = 1;
     private final BtCommunication btcomm;
     StreamConnection conn;
+    Color darkCharcoal = new Color(51, 51, 51);
+    Color White = new Color(255, 255, 255);
 
     private final String[] strRedPieces = {"whitePawn.png", "whiteRock.png", "whiteKnight.png", "whiteBishop.png", "whiteQueen.png", "whiteKing.png"};
     private final String[] strBluePieces = {"blackPawn.png", "blackRock.png", "blackKnight.png", "blackBishop.png", "blackQueen.png", "blackKing.png"};
@@ -93,7 +95,28 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     protected void drawExtra(Graphics g) {
         System.err.println("windowchessboard, drawextra() being running");
-        for (int i = 0; i < vecPaintInstructions.size(); i++) {
+        
+        initialBoardPaint(g); // Initialized Board Painting Instruction
+
+        if (isDragging) {
+            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
+        }      
+        
+        boardDesign(g); // color, text style ... 
+
+        vecPaintInstructions.clear(); //clear all paint instructions
+    }
+
+	private void boardDesign(Graphics g) {
+		g.setColor(darkCharcoal);
+        g.fillRect(5, 405, 415, 25);
+		g.setColor(White);
+        g.setFont(new Font("Arial", Font.PLAIN, 13));
+        g.drawString(strStatusMsg, 5, 425);
+	}
+
+	private void initialBoardPaint(Graphics g) {
+		for (int i = 0; i < vecPaintInstructions.size(); i++) {
             System.err.println("vectorInstruction" + vecPaintInstructions.size());
 
             currentInstruction =  vecPaintInstructions.elementAt(i);
@@ -115,20 +138,7 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                 }
             }
         }
-
-        if (isDragging) {
-            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
-        }
-        Color darkCharcoal = new Color(51, 51, 51);
-        Color White = new Color(255, 255, 255);
-        g.setColor(darkCharcoal);
-        g.fillRect(5, 405, 415, 25);
-		g.setColor(White);
-        g.setFont(new Font("Arial", Font.PLAIN, 13));
-        g.drawString(strStatusMsg, 5, 425);
-
-        vecPaintInstructions.clear(); //clear all paint instructions
-    }
+	}
 
     public void newGame(boolean isServer1, StreamConnection conn1) {
         isServer = isServer1;
@@ -414,16 +424,15 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         if (myturn) {
             drag = true;
             if (isDragging) {
-                int xLocation = e.getX();
-                int yLocation = e.getY();
+                int xTouchedLocation = e.getX();
+                int yTouchedLocation = e.getY();
 
-                boolean isxLocationInside = xLocation > 5 && xLocation < 405;
-				boolean isyLocationInside = yLocation > 5 && yLocation < 405;
-				if (isxLocationInside && isyLocationInside) //in the correct bounds
+				final boolean isTouchInside = xTouchedLocation > 5 && xTouchedLocation < 405 && yTouchedLocation > 5 && yTouchedLocation < 405;
+				if (isTouchInside) //in the correct bounds
                 {
                     if (refreshCounter >= refreshRate) {
-                        currentX = xLocation;
-                        currentY = yLocation;
+                        currentX = xTouchedLocation;
+                        currentY = yTouchedLocation;
                         refreshCounter = 0;
                         int desRow = findWhichTileSelected(currentY);
                         int desColumn = findWhichTileSelected(currentX);

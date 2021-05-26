@@ -15,8 +15,6 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     private String strStatusMsg = "";
     private final CellMatrix cellMatrix = new CellMatrix();
     private int currentPlayer = 1, startRow = 7, startColumn = 7, pieceBeingDragged = 1;
-    private final int startingX = 0;
-    private final int startingY = 0;
     private int currentX = 0;
     private int currentY = 0;
     private int refreshCounter = 0;
@@ -28,9 +26,11 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     private final Queen queenObject = new Queen();
     private final King kingObject = new King();
     private int kingRow, kingCol;
-    private int pplayer = 1, ppiece = 1;
+    private int playerMousePosition = 1, piecePosition = 1;
     private int moveCount = 0;
     private final String[] moveRecord = new String[500];
+    public static Color darkChacol = new Color(51, 51, 51); // add color
+    public static Color White = new Color(255, 255, 255); // add color
 
     public WindowChessGameSingle() {
         super();
@@ -78,7 +78,28 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 
     protected void drawExtra(Graphics g) {
         System.err.println("windowchessboard, drawextra() being running");
-        for (int i = 0; i < vecPaintInstructions.size(); i++) {
+        
+        initialBoardPaint(g); // Initialized Board Painting Instruction
+
+        if (isDragging) {
+            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
+        }
+        
+        boardDesign(g); // color, text style ... 
+
+        vecPaintInstructions.clear(); //clear all paint instructions
+    }
+
+	private void boardDesign(Graphics g) {
+		g.setColor(darkChacol);
+        g.fillRect(5, 405, 415, 25);
+		g.setColor(White);
+        g.setFont(new Font("Arial", Font.PLAIN, 13));
+        g.drawString(strStatusMsg, 5, 425);
+	}
+
+	private void initialBoardPaint(Graphics g) {
+		for (int i = 0; i < vecPaintInstructions.size(); i++) {
             System.err.println("vectorInstruction" + vecPaintInstructions.size());
 
             currentInstruction =  vecPaintInstructions.elementAt(i);
@@ -100,20 +121,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 }
             }
         }
-
-        if (isDragging) {
-            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
-        }
-        Color darkChacol = new Color(51, 51, 51);
-        Color White = new Color(255, 255, 255);
-		g.setColor(darkChacol);
-        g.fillRect(5, 405, 415, 25);
-		g.setColor(White);
-        g.setFont(new Font("Arial", Font.PLAIN, 13));
-        g.drawString(strStatusMsg, 5, 425);
-
-        vecPaintInstructions.clear(); //clear all paint instructions
-    }
+	}
 
     public void newGame() {
         System.err.println("windowchessboard, newGame() being running");
@@ -126,7 +134,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         boolean legalMove = false;
 
         //if moved onto own piece
-        boolean isNotYourPiece = cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer;
+        final boolean isNotYourPiece = cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer;
 		if (isNotYourPiece) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
@@ -185,15 +193,15 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                     newDesColumn = kingObject.getDesColumn();
                     break;
             }
+            
+            // save current position
+            saveCurrentPosition(newDesRow, newDesColumn);
 
-            pplayer = cellMatrix.getPlayerCell(newDesRow, newDesColumn);
-            ppiece = cellMatrix.getPieceCell(newDesRow, newDesColumn);
+            // set current move position
+            setCurrentMovePosition(newDesRow, newDesColumn);
 
-            cellMatrix.setPlayerCell(newDesRow, newDesColumn, currentPlayer);
-            cellMatrix.setPieceCell(newDesRow, newDesColumn, pieceBeingDragged);
-
-            kingRow = cellMatrix.getKingRow(currentPlayer);
-            kingCol = cellMatrix.getKingCol(currentPlayer);
+            // Where is King 
+            getKingPosition();
 
             System.err.println("KingRow= " + kingRow + " KingCol= " + kingCol);
             kingSafe = cellMatrix.isKingSafe(currentPlayer, kingRow, kingCol);
@@ -204,8 +212,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
                 System.err.println("King is NOT Safe");
             }
             if (kingSafe) {
-                cellMatrix.setPlayerCell(newDesRow, newDesColumn, currentPlayer);
-                cellMatrix.setPieceCell(newDesRow, newDesColumn, pieceBeingDragged);
+                setCurrentMovePosition(newDesRow, newDesColumn);
                 if (cellMatrix.checkWinner(currentPlayer)) {
                     hasWon = true;
                     strStatusMsg = getPlayerMsg();
@@ -223,8 +230,8 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             } else {
                 unsucessfullDrag();
 
-                cellMatrix.setPlayerCell(newDesRow, newDesColumn, pplayer);
-                cellMatrix.setPieceCell(newDesRow, newDesColumn, ppiece);
+                cellMatrix.setPlayerCell(newDesRow, newDesColumn, playerMousePosition);
+                cellMatrix.setPieceCell(newDesRow, newDesColumn, piecePosition);
 
                 strStatusMsg = "" + strPlayerName[currentPlayer - 1] + ", Your King is checked";
                 repaint();
@@ -253,6 +260,21 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             unsucessfullDrag();
         }
     }
+
+	private void getKingPosition() {
+		kingRow = cellMatrix.getKingRow(currentPlayer);
+		kingCol = cellMatrix.getKingCol(currentPlayer);
+	}
+
+	private void setCurrentMovePosition(int newDesRow, int newDesColumn) {
+		cellMatrix.setPlayerCell(newDesRow, newDesColumn, currentPlayer);
+		cellMatrix.setPieceCell(newDesRow, newDesColumn, pieceBeingDragged);
+	}
+
+	private void saveCurrentPosition(int newDesRow, int newDesColumn) {
+		playerMousePosition = cellMatrix.getPlayerCell(newDesRow, newDesColumn);
+		piecePosition = cellMatrix.getPieceCell(newDesRow, newDesColumn);
+	}
 
     private boolean isCheckMate(int curPlayer) {
         kingRow = cellMatrix.getKingRow(curPlayer);
@@ -285,14 +307,13 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     }
 
 	private boolean checkCases(int curPlayer, boolean checkCase, int newKingRow, int newKingCol) {
-		boolean legalMove;
-		boolean safe;
-		boolean isNewKingRow = newKingRow >= 0 && newKingRow <= 7;
-		boolean isNewKingCol = newKingCol >= 0 && newKingCol <= 8;
-		if (isNewKingRow  && isNewKingCol) {
-            legalMove = kingObject.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
-            safe = cellMatrix.isKingSafe(curPlayer, newKingRow, newKingCol);
-            if (!legalMove || !safe) {
+		boolean isLegalMove;
+		boolean isSafe;
+		final boolean isNewKingPosition = newKingRow >= 0 && newKingRow <= 7  && newKingCol >= 0 && newKingCol <= 8;
+		if (isNewKingPosition) {
+            isLegalMove = kingObject.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
+            isSafe = cellMatrix.isKingSafe(curPlayer, newKingRow, newKingCol);
+            if (!isLegalMove || !isSafe) {
                 checkCase = true;
             } else {
                 checkCase = false;
@@ -368,8 +389,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
             int desColumn = findWhichTileSelected(currentX);
             checkMove(desRow, desColumn);
 
-            kingRow = cellMatrix.getKingRow(currentPlayer);
-            kingCol = cellMatrix.getKingCol(currentPlayer);
+            getKingPosition();
 
             System.err.println("KingRow= " + kingRow + " KingCol= " + kingCol);
             kingSafe = cellMatrix.isKingSafe(currentPlayer, kingRow, kingCol);
