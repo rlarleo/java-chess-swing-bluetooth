@@ -64,7 +64,7 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     }
 
-    //reset playermatrix and pieces matrix
+    //reset player matrix and pieces matrix
     private void resetBoard() {
         System.err.println("windowchessboard, resetboard() being running");
         hasWon = false;
@@ -74,12 +74,9 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         repaint();
         cellMatrix.printPieceCell();
         cellMatrix.printPlayerCell();
-
     }
 
     public void setupImages() {
-
-
         for (int i = 0; i < 6; i++) {
             imgWhite[i] = new ImageIcon(getClass().getResource("images/" + strRedPieces[i]));
             imgBlack[i] = new ImageIcon(getClass().getResource("images/" + strBluePieces[i]));
@@ -105,25 +102,18 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             int rowCells = currentInstruction.getRowCells();
             int columnCells = currentInstruction.getColumnCells();
             for (int row = 0; row < (paintStartRow + rowCells); row++) {
-
                 for (int column = 0; column < (paintStartColumn + columnCells); column++) {
-
                     int playerCell = cellMatrix.getPlayerCell(row, column);
                     int pieceCell = cellMatrix.getPieceCell(row, column);
 
                     if (playerCell != 0) {
-
                         try {
                             g.drawImage((imgPlayer[playerCell - 1][pieceCell].getImage()), ((column + 1) * 50) - 45, ((row + 1) * 50) - 45, this);
                         } catch (ArrayIndexOutOfBoundsException e) {
                         }
-
                     }
-
                 }
-
             }
-
         }
 
         if (isDragging) {
@@ -161,7 +151,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         System.err.println("windowchessboard, newGame() being running");
         firstTime = false;
         resetBoard();
-
     }
 
     public void processCommands(String[] command) {
@@ -200,10 +189,8 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         if (cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
-
             //find the move is valid or not
             switch (pieceBeingDragged) {
-
                 case 0:
                     legalMove = pawnObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix(), currentPlayer);
                     break;
@@ -224,7 +211,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     break;
             }
         }
-
 
         //if legal
         if (legalMove) {
@@ -295,13 +281,9 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     System.err.println("checking haswon??");
                     hasWon = true;
                     strStatusMsg = getPlayerMsg();
-
                 } else {
-
                     changeTurn();
-
                     strStatusMsg = getPlayerMsg();
-
                 }
             } else {
                 unsucessfullDrag();
@@ -317,7 +299,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             System.err.println("ILLEGAL");
 
             switch (pieceBeingDragged) {
-
                 case 0:
                     strStatusMsg = pawnObject.getErrorMsg();
                     break;
@@ -336,20 +317,15 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                 case 5:
                     strStatusMsg = kingObject.getErrorMsg();
                     break;
-
             }
-
             unsucessfullDrag();
-
         }
-
     }
 
     private void unsucessfullDrag() {
         System.err.println("unsuccessfulDrag");
         cellMatrix.setPieceCell(startRow, startColumn, pieceBeingDragged);
         cellMatrix.setPlayerCell(startRow, startColumn, currentPlayer);
-
     }
 
     private void updatePaintInstructions(int desRow, int desColumn) {

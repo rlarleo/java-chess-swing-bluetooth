@@ -1,7 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class GUISingle extends javax.swing.JPanel {
+public class GUISingle extends javax.swing.JPanel implements CreateGUICommand {
 
     /**
      * Creates new form NewJPanel

@@ -284,7 +284,9 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 	private boolean checkCases(int curPlayer, boolean checkCase, int newKingRow, int newKingCol) {
 		boolean legalMove;
 		boolean safe;
-		if (newKingRow >= 0 && newKingCol >= 0 && newKingRow <= 7 && newKingCol <= 8) {
+		boolean isNewKingRow = newKingRow >= 0 && newKingRow <= 7;
+		boolean isNewKingCol = newKingCol >= 0 && newKingCol <= 8;
+		if (isNewKingRow  && isNewKingCol) {
             legalMove = kingObject.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
             safe = cellMatrix.isKingSafe(curPlayer, newKingRow, newKingCol);
             if (!legalMove || !safe) {
@@ -342,6 +344,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 
                 } else {
                     isDragging = false;
+                    
                 }
             }
         }
