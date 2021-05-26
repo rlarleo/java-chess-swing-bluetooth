@@ -104,9 +104,11 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         if (isDragging) {
             g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
         }
-        g.setColor(new Color(51, 51, 51));
+        Color darkChacol = new Color(51, 51, 51);
+        Color White = new Color(255, 255, 255);
+		g.setColor(darkChacol);
         g.fillRect(5, 405, 415, 25);
-        g.setColor(new Color(255, 255, 255));
+		g.setColor(White);
         g.setFont(new Font("Arial", Font.PLAIN, 13));
         g.drawString(strStatusMsg, 5, 425);
 

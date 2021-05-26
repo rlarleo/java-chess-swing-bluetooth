@@ -119,9 +119,11 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         if (isDragging) {
             g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
         }
-        g.setColor(new Color(51, 51, 51));
+        Color darkCharcoal = new Color(51, 51, 51);
+        Color White = new Color(255, 255, 255);
+        g.setColor(darkCharcoal);
         g.fillRect(5, 405, 415, 25);
-        g.setColor(new Color(255, 255, 255));
+		g.setColor(White);
         g.setFont(new Font("Arial", Font.PLAIN, 13));
         g.drawString(strStatusMsg, 5, 425);
 
@@ -186,7 +188,8 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         String msg;
 
         //if moved onto own piece
-        if (cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer) {
+        boolean isNotYourPiece = cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer;
+		if (isNotYourPiece) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
             //find the move is valid or not
@@ -258,7 +261,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             msg = "playerCell#" + newDesRow + "#" + newDesColumn + "#" + currentPlayer;
             btcomm.writeMessage(msg);
             System.err.println("Sent: " + msg);
-
 
             kr = cellMatrix.getKingRow(currentPlayer);
             kc = cellMatrix.getKingCol(currentPlayer);
@@ -352,14 +354,16 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             System.err.println("windowchessboard, mousepressed() being running");
             if (!hasWon && !firstTime) {
 
-                int x = e.getX();
-                int y = e.getY();
+                int xLocation = e.getX();
+                int yLocation = e.getY();
 
-                if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+                boolean isxLocationInside = xLocation > 5 && xLocation < 405;
+				boolean isyLocationInside = yLocation > 5 && yLocation < 405;
+				if (isxLocationInside && isyLocationInside) //in the correct bounds
                 {
                     //find startRow and StartColumn from where the player clicks on the board
-                    startRow = findWhichTileSelected(y);
-                    startColumn = findWhichTileSelected(x);
+                    startRow = findWhichTileSelected(yLocation);
+                    startColumn = findWhichTileSelected(xLocation);
                     System.err.println("START  " + startRow + " ," + startColumn);
                     if (cellMatrix.getPlayerCell(startRow, startColumn) == currentPlayer) {
 
@@ -367,7 +371,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                         cellMatrix.setPieceCell(startRow, startColumn, 6);
                         cellMatrix.setPlayerCell(startRow, startColumn, 0);
                         isDragging = true;
-
                     } else {
                         isDragging = false;
                     }
@@ -380,17 +383,12 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     public void mouseReleased(MouseEvent e) {
         if (myturn) {
-
             if (!drag) {
                 cellMatrix.setPieceCell(startRow, startColumn, pieceBeingDragged);
                 cellMatrix.setPlayerCell(startRow, startColumn, currentPlayer);
             }
-
-
             if (isDragging) {
-
                 isDragging = false;
-
                 int desRow = findWhichTileSelected(currentY);
                 int desColumn = findWhichTileSelected(currentX);
                 checkMove(desRow, desColumn);
@@ -407,9 +405,7 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     strStatusMsg = "" + strPlayerName[currentPlayer - 1] + " move, Your King is checked";
                     System.err.println("King is NOT Safe");
                 }
-
                 repaint();
-
             }
         }
         cellMatrix.printPieceCell();
@@ -418,20 +414,18 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     public void mouseDragged(MouseEvent e) {
         if (myturn) {
-
             drag = true;
             if (isDragging) {
+                int xLocation = e.getX();
+                int yLocation = e.getY();
 
-                int x = e.getX();
-                int y = e.getY();
-
-                if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+                boolean isxLocationInside = xLocation > 5 && xLocation < 405;
+				boolean isyLocationInside = yLocation > 5 && yLocation < 405;
+				if (isxLocationInside && isyLocationInside) //in the correct bounds
                 {
-
                     if (refreshCounter >= refreshRate) {
-
-                        currentX = x;
-                        currentY = y;
+                        currentX = xLocation;
+                        currentY = yLocation;
                         refreshCounter = 0;
                         int desRow = findWhichTileSelected(currentY);
                         int desColumn = findWhichTileSelected(currentX);
