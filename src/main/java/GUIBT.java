@@ -5,7 +5,7 @@ import javax.microedition.io.StreamConnection;
 import javax.swing.*;
 import java.awt.*;
 
-public class GUIBT extends javax.swing.JPanel implements Runnable {
+public class GUIBT extends javax.swing.JPanel implements Runnable, CreateGUICommand {
 
     public final boolean isServer;
     JFrame app;

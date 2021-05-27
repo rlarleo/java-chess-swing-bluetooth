@@ -32,6 +32,8 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
     private int pplayer = 1, ppiece = 1;
     private final BtCommunication btcomm;
     StreamConnection conn;
+    Color darkCharcoal = new Color(51, 51, 51);
+    Color White = new Color(255, 255, 255);
 
     private final String[] strRedPieces = {"whitePawn.png", "whiteRock.png", "whiteKnight.png", "whiteBishop.png", "whiteQueen.png", "whiteKing.png"};
     private final String[] strBluePieces = {"blackPawn.png", "blackRock.png", "blackKnight.png", "blackBishop.png", "blackQueen.png", "blackKing.png"};
@@ -64,7 +66,7 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     }
 
-    //reset playermatrix and pieces matrix
+    //reset player matrix and pieces matrix
     private void resetBoard() {
         System.err.println("windowchessboard, resetboard() being running");
         hasWon = false;
@@ -74,12 +76,9 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         repaint();
         cellMatrix.printPieceCell();
         cellMatrix.printPlayerCell();
-
     }
 
     public void setupImages() {
-
-
         for (int i = 0; i < 6; i++) {
             imgWhite[i] = new ImageIcon(getClass().getResource("images/" + strRedPieces[i]));
             imgBlack[i] = new ImageIcon(getClass().getResource("images/" + strBluePieces[i]));
@@ -96,7 +95,28 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     protected void drawExtra(Graphics g) {
         System.err.println("windowchessboard, drawextra() being running");
-        for (int i = 0; i < vecPaintInstructions.size(); i++) {
+        
+        initialBoardPaint(g); // Initialized Board Painting Instruction
+
+        if (isDragging) {
+            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
+        }      
+        
+        boardDesign(g); // color, text style ... 
+
+        vecPaintInstructions.clear(); //clear all paint instructions
+    }
+
+	private void boardDesign(Graphics g) {
+		g.setColor(darkCharcoal);
+        g.fillRect(5, 405, 415, 25);
+		g.setColor(White);
+        g.setFont(new Font("Arial", Font.PLAIN, 13));
+        g.drawString(strStatusMsg, 5, 425);
+	}
+
+	private void initialBoardPaint(Graphics g) {
+		for (int i = 0; i < vecPaintInstructions.size(); i++) {
             System.err.println("vectorInstruction" + vecPaintInstructions.size());
 
             currentInstruction =  vecPaintInstructions.elementAt(i);
@@ -105,38 +125,20 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             int rowCells = currentInstruction.getRowCells();
             int columnCells = currentInstruction.getColumnCells();
             for (int row = 0; row < (paintStartRow + rowCells); row++) {
-
                 for (int column = 0; column < (paintStartColumn + columnCells); column++) {
-
                     int playerCell = cellMatrix.getPlayerCell(row, column);
                     int pieceCell = cellMatrix.getPieceCell(row, column);
 
                     if (playerCell != 0) {
-
                         try {
                             g.drawImage((imgPlayer[playerCell - 1][pieceCell].getImage()), ((column + 1) * 50) - 45, ((row + 1) * 50) - 45, this);
                         } catch (ArrayIndexOutOfBoundsException e) {
                         }
-
                     }
-
                 }
-
             }
-
         }
-
-        if (isDragging) {
-            g.drawImage((imgPlayer[currentPlayer - 1][pieceBeingDragged].getImage()), (currentX - 25), (currentY - 25), this);
-        }
-        g.setColor(new Color(51, 51, 51));
-        g.fillRect(5, 405, 415, 25);
-        g.setColor(new Color(255, 255, 255));
-        g.setFont(new Font("Arial", Font.PLAIN, 13));
-        g.drawString(strStatusMsg, 5, 425);
-
-        vecPaintInstructions.clear(); //clear all paint instructions
-    }
+	}
 
     public void newGame(boolean isServer1, StreamConnection conn1) {
         isServer = isServer1;
@@ -161,7 +163,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         System.err.println("windowchessboard, newGame() being running");
         firstTime = false;
         resetBoard();
-
     }
 
     public void processCommands(String[] command) {
@@ -197,13 +198,12 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         String msg;
 
         //if moved onto own piece
-        if (cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer) {
+        boolean isNotYourPiece = cellMatrix.getPlayerCell(desRow, desColumn) == currentPlayer;
+		if (isNotYourPiece) {
             strStatusMsg = "Can not move onto a piece that is yours";
         } else {
-
             //find the move is valid or not
             switch (pieceBeingDragged) {
-
                 case 0:
                     legalMove = pawnObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix(), currentPlayer);
                     break;
@@ -224,7 +224,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     break;
             }
         }
-
 
         //if legal
         if (legalMove) {
@@ -273,7 +272,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             btcomm.writeMessage(msg);
             System.err.println("Sent: " + msg);
 
-
             kr = cellMatrix.getKingRow(currentPlayer);
             kc = cellMatrix.getKingCol(currentPlayer);
 
@@ -295,13 +293,9 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     System.err.println("checking haswon??");
                     hasWon = true;
                     strStatusMsg = getPlayerMsg();
-
                 } else {
-
                     changeTurn();
-
                     strStatusMsg = getPlayerMsg();
-
                 }
             } else {
                 unsucessfullDrag();
@@ -317,7 +311,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
             System.err.println("ILLEGAL");
 
             switch (pieceBeingDragged) {
-
                 case 0:
                     strStatusMsg = pawnObject.getErrorMsg();
                     break;
@@ -336,20 +329,15 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                 case 5:
                     strStatusMsg = kingObject.getErrorMsg();
                     break;
-
             }
-
             unsucessfullDrag();
-
         }
-
     }
 
     private void unsucessfullDrag() {
         System.err.println("unsuccessfulDrag");
         cellMatrix.setPieceCell(startRow, startColumn, pieceBeingDragged);
         cellMatrix.setPlayerCell(startRow, startColumn, currentPlayer);
-
     }
 
     private void updatePaintInstructions(int desRow, int desColumn) {
@@ -375,15 +363,15 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
         if (myturn) {
             System.err.println("windowchessboard, mousepressed() being running");
             if (!hasWon && !firstTime) {
+                int xTouchedLocation = e.getX();
+                int yTouchedLocation = e.getY();
 
-                int x = e.getX();
-                int y = e.getY();
-
-                if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+				boolean isTouchedInside = (xTouchedLocation > 5 && xTouchedLocation < 405) && (yTouchedLocation > 5 && yTouchedLocation < 405);
+				if (isTouchedInside) //in the correct bounds
                 {
                     //find startRow and StartColumn from where the player clicks on the board
-                    startRow = findWhichTileSelected(y);
-                    startColumn = findWhichTileSelected(x);
+                    startRow = findWhichTileSelected(yTouchedLocation);
+                    startColumn = findWhichTileSelected(xTouchedLocation);
                     System.err.println("START  " + startRow + " ," + startColumn);
                     if (cellMatrix.getPlayerCell(startRow, startColumn) == currentPlayer) {
 
@@ -391,7 +379,6 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                         cellMatrix.setPieceCell(startRow, startColumn, 6);
                         cellMatrix.setPlayerCell(startRow, startColumn, 0);
                         isDragging = true;
-
                     } else {
                         isDragging = false;
                     }
@@ -404,17 +391,12 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     public void mouseReleased(MouseEvent e) {
         if (myturn) {
-
             if (!drag) {
                 cellMatrix.setPieceCell(startRow, startColumn, pieceBeingDragged);
                 cellMatrix.setPlayerCell(startRow, startColumn, currentPlayer);
             }
-
-
             if (isDragging) {
-
                 isDragging = false;
-
                 int desRow = findWhichTileSelected(currentY);
                 int desColumn = findWhichTileSelected(currentX);
                 checkMove(desRow, desColumn);
@@ -431,9 +413,7 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
                     strStatusMsg = "" + strPlayerName[currentPlayer - 1] + " move, Your King is checked";
                     System.err.println("King is NOT Safe");
                 }
-
                 repaint();
-
             }
         }
         cellMatrix.printPieceCell();
@@ -442,20 +422,17 @@ public class WindowChessGameBT extends ChessBoard implements MouseListener, Mous
 
     public void mouseDragged(MouseEvent e) {
         if (myturn) {
-
             drag = true;
             if (isDragging) {
+                int xTouchedLocation = e.getX();
+                int yTouchedLocation = e.getY();
 
-                int x = e.getX();
-                int y = e.getY();
-
-                if ((x > 5 && x < 405) && (y > 5 && y < 405)) //in the correct bounds
+				final boolean isTouchInside = xTouchedLocation > 5 && xTouchedLocation < 405 && yTouchedLocation > 5 && yTouchedLocation < 405;
+				if (isTouchInside) //in the correct bounds
                 {
-
                     if (refreshCounter >= refreshRate) {
-
-                        currentX = x;
-                        currentY = y;
+                        currentX = xTouchedLocation;
+                        currentY = yTouchedLocation;
                         refreshCounter = 0;
                         int desRow = findWhichTileSelected(currentY);
                         int desColumn = findWhichTileSelected(currentX);

@@ -232,7 +232,7 @@ public class MainUI extends JFrame {
 
     private class MouseHandler implements MouseListener {
         final GUIController GUIController = new GUIController();
-
+        //CreateGUICommand createGUICommand = new CreateGUICommand();
         public void mouseClicked(MouseEvent e) {
             //throw new UnsupportedOperationException("Not supported yet.");
         }
@@ -266,8 +266,9 @@ public class MainUI extends JFrame {
                 //Extract method
                 JFrame main = makeTitle();
                 
-                //Facade Pattern     
-                GUIController.makeSingleChessWindow(main);
+                //Facade Pattern, Command Pattern
+                GUIController.setMode(Mode.S);
+                GUIController.makeChesswindow(main);
 
                 //Extract method
                 createGameBoard(main, GUIController.singleChessWindow);
@@ -278,8 +279,9 @@ public class MainUI extends JFrame {
                     //Extract method
                     JFrame main = makeTitle();
                     
-                    //Facade Pattern
-                    GUIController.makeBTChessWindow(main);
+                    //Facade Pattern, Command Pattern
+                    GUIController.setMode(Mode.B);
+                    GUIController.makeChesswindow(main);   
                     
                     //Extract method
                     createGameBoard(main, GUIController.BTChessWindow);
@@ -294,8 +296,9 @@ public class MainUI extends JFrame {
                     //Extract method
                     JFrame main = makeTitle();
                     
-                    //Facade Pattern
-                    GUIController.makeBTChessWindow(main);
+                    //Facade Pattern, Command Pattern
+                    GUIController.setMode(Mode.B);
+                    GUIController.makeChesswindow(main);
                     
                     //Extract method
                     createGameBoard(main, GUIController.BTChessWindow);
