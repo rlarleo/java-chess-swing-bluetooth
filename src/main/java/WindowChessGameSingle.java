@@ -1,4 +1,5 @@
 
+
 import chess.*;
 
 import javax.swing.*;
@@ -19,12 +20,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
     private int currentY = 0;
     private int refreshCounter = 0;
     private boolean firstTime = true, hasWon = false, isDragging = false, kingSafe, drag = false;
-    private final Pawn pawnObject = new Pawn();
-    private final Rock rockObject = new Rock();
-    private final Knight knightObject = new Knight();
-    private final Bishop bishopObject = new Bishop();
-    private final Queen queenObject = new Queen();
-    private final King kingObject = new King();
+    private final PieceFactory pieceFactory = new PieceFactory();
     private int kingRow, kingCol;
     private int playerMousePosition = 1, piecePosition = 1;
     private int moveCount = 0;
@@ -141,22 +137,22 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         	//find the move is valid or not
             switch (pieceBeingDragged) {
                 case 0:
-                    legalMove = pawnObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix(), currentPlayer);
+                    legalMove = pieceFactory.pawn.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix(), currentPlayer);
                     break;
                 case 1:
-                    legalMove = rockObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
+                    legalMove = pieceFactory.rock.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
                 case 2:
-                    legalMove = knightObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
+                    legalMove = pieceFactory.knight.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
                 case 3:
-                    legalMove = bishopObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
+                    legalMove = pieceFactory.bishop.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
                 case 4:
-                    legalMove = queenObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
+                    legalMove = pieceFactory.queen.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
                 case 5:
-                    legalMove = kingObject.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
+                    legalMove = pieceFactory.king.legalMove(startRow, startColumn, desRow, desColumn, cellMatrix.getPlayerMatrix());
                     break;
             }
         }
@@ -169,28 +165,28 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 
             switch (pieceBeingDragged) {
                 case 0:
-                    newDesRow = pawnObject.getDesRow();
-                    newDesColumn = pawnObject.getDesColumn();
+                    newDesRow = pieceFactory.pawn.getDesRow();
+                    newDesColumn = pieceFactory.pawn.getDesColumn();
                     break;
                 case 1:
-                    newDesRow = rockObject.getDesRow();
-                    newDesColumn = rockObject.getDesColumn();
+                    newDesRow = pieceFactory.rock.getDesRow();
+                    newDesColumn = pieceFactory.rock.getDesColumn();
                     break;
                 case 2:
-                    newDesRow = knightObject.getDesRow();
-                    newDesColumn = knightObject.getDesColumn();
+                    newDesRow = pieceFactory.knight.getDesRow();
+                    newDesColumn = pieceFactory.knight.getDesColumn();
                     break;
                 case 3:
-                    newDesRow = bishopObject.getDesRow();
-                    newDesColumn = bishopObject.getDesColumn();
+                    newDesRow = pieceFactory.bishop.getDesRow();
+                    newDesColumn = pieceFactory.bishop.getDesColumn();
                     break;
                 case 4:
-                    newDesRow = queenObject.getDesRow();
-                    newDesColumn = queenObject.getDesColumn();
+                    newDesRow = pieceFactory.queen.getDesRow();
+                    newDesColumn = pieceFactory.queen.getDesColumn();
                     break;
                 case 5:
-                    newDesRow = kingObject.getDesRow();
-                    newDesColumn = kingObject.getDesColumn();
+                    newDesRow = pieceFactory.king.getDesRow();
+                    newDesColumn = pieceFactory.king.getDesColumn();
                     break;
             }
             
@@ -239,22 +235,22 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
         } else {
             switch (pieceBeingDragged) {
                 case 0:
-                    strStatusMsg = pawnObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.pawn.getErrorMsg();
                     break;
                 case 1:
-                    strStatusMsg = rockObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.rock.getErrorMsg();
                     break;
                 case 2:
-                    strStatusMsg = knightObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.knight.getErrorMsg();
                     break;
                 case 3:
-                    strStatusMsg = bishopObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.bishop.getErrorMsg();
                     break;
                 case 4:
-                    strStatusMsg = queenObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.queen.getErrorMsg();
                     break;
                 case 5:
-                    strStatusMsg = kingObject.getErrorMsg();
+                    strStatusMsg = pieceFactory.king.getErrorMsg();
                     break;
             }
             unsucessfullDrag();
@@ -311,7 +307,7 @@ public class WindowChessGameSingle extends ChessBoard implements MouseListener, 
 		boolean isSafe;
 		final boolean isNewKingPosition = newKingRow >= 0 && newKingRow <= 7  && newKingCol >= 0 && newKingCol <= 8;
 		if (isNewKingPosition) {
-            isLegalMove = kingObject.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
+            isLegalMove = pieceFactory.king.legalMove(kingRow, kingCol, newKingRow, newKingCol, cellMatrix.getPlayerMatrix());
             isSafe = cellMatrix.isKingSafe(curPlayer, newKingRow, newKingCol);
             if (!isLegalMove || !isSafe) {
                 checkCase = true;
