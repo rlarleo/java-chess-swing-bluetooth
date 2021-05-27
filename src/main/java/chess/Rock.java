@@ -13,7 +13,7 @@ public class Rock extends BasePiece {
         }
         //Since Queen shares the same movement as a bishop or rock, the path checking code is shared for all 3 of them
         //The boolean at the end is whether the piece is moving straight, or diagonally
-        return checkMoveStraightDiagonal(startRow, startColumn, desRow, desColumn, playerMatrix, true);
+        return moveStraightAxis(startRow, startColumn, desRow, desColumn, playerMatrix);
 
     }
 }
