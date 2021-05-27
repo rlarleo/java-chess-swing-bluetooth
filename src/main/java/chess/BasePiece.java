@@ -5,193 +5,160 @@ package chess;
  * finalDesRow, finalDesColumn & strErrorMsg
  * this class is extended in all pieces classes-> [Piece].java
  */
+
+
+
 abstract class BasePiece {
 
     protected int finalDesRow = 0;
     protected int finalDesColumn = 0;
     protected String strErrorMsg = "";
-
+    public static final int moveEast = 0;
+    public static final int moveWest = 1;
+	public static final int moveNorth = 2;
+	public static final int moveSouth = 3;
+	public static final int moveNW = 4;
+	public static final int moveNE = 5;
+	public static final int moveSW = 6;
+	public static final int moveSE = 7;
     //Method for checking the path to the destination and making sure nothing is in the way
-
-    protected boolean checkMoveStraightDiagonal(int startRow, int startColumn, int desRow, int desColumn, int[][] playerMatrix, boolean straightAxis) {
-
-        if (straightAxis) //Moving along a straight axis (rock, queen)
-        {
-
-            if ((startColumn == desColumn) && (startRow != desRow)) //Moving along the same column
-            {
-
-                if (desRow < startRow) //Moving N
-                {
-                    //Checks each cell between the start row - 1 (since don't need to check the cell it is in) to the destination cell
-                    for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
-                        //Checks the cell is empty
-                        if (!checkAxisMove(newRow, desColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                } else //Moving S
-                {
-
-                    for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
-
-                        if (!checkAxisMove(newRow, desColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
+	
+	public int moveDir(int startRow, int startColumn, int desRow, int desColumn) {
+		boolean moveOnColumn = startColumn != desColumn;
+    	boolean notMoveOnColumn = startColumn == desColumn;
+    	boolean moveOnRow = startRow != desRow;
+    	boolean notMoveOnRow = startRow == desRow;
+    	boolean north = desRow < startRow;
+    	boolean south = !north;
+    	boolean west = desColumn < startColumn;
+    	boolean east = !west;
+    	
+		if(notMoveOnColumn&&moveOnRow&&north) return moveNorth;
+		else if(notMoveOnColumn&&moveOnRow&&south) return moveSouth;
+		else if(notMoveOnRow&&moveOnColumn&&west) return moveWest;
+		else if(notMoveOnRow&&moveOnColumn&&east) return moveEast;
+		else if(north&&west) return moveNW;
+		else if(north&&east) return moveNE;
+		else if(south&&west) return moveSW;
+		else return moveSE;
+	}
+    protected boolean moveStraightAxis(int startRow, int startColumn, int desRow, int desColumn, int[][] playerMatrix) {
+    	switch(moveDir(startRow,startColumn,desRow,desColumn)) {
+    	case moveNorth:
+    		//Checks each cell between the start row - 1 (since don't need to check the cell it is in) to the destination cell
+            for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
+                //Checks the cell is empty
+                if (!checkAxisMove(newRow, desColumn, playerMatrix)) {
+                    return false;
                 }
-
-            } else if ((startRow == desRow) && (startColumn != desColumn)) //Moving along the same row
-            {
-
-                if (desColumn < startColumn) //Moving W
-                {
-
-                    for (int newColumn = (startColumn - 1); newColumn > desColumn; newColumn--) {
-
-                        if (!checkAxisMove(desRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                } else //Moving E
-                {
-
-                    for (int newColumn = (startColumn + 1); newColumn < desColumn; newColumn++) {
-
-                        if (!checkAxisMove(desRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                }
-
-            } else //If moved diagonally
-            {
-
-                strErrorMsg = "";
-                return false;
-
+            } break;
+    	case moveSouth:
+    		for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
+    			if (!checkAxisMove(newRow, desColumn, playerMatrix)) {
+    				return false;
             }
+        } break;
+    	case moveWest:
+    		for (int newColumn = (startColumn - 1); newColumn > desColumn; newColumn--) {			
+				if (!checkAxisMove(desRow, newColumn, playerMatrix)) {
+					return false;
+					}
+				}break;
+    	case moveEast:
+    		for (int newColumn = (startColumn + 1); newColumn < desColumn; newColumn++) {
+				if (!checkAxisMove(desRow, newColumn, playerMatrix)) {
+					return false;
+					}
+				}break;
+		default: 
+			strErrorMsg = ""; 
+			return false;
+    	}
+    	
+    	finalDesRow = desRow;
+        finalDesColumn = desColumn;
 
-        } else //Moving diagonal (bishop/queen)
-        {
+        return true;
+    }
+    protected boolean moveDiagonal(int startRow, int startColumn, int desRow, int desColumn, int[][] playerMatrix) {
+    	boolean legalNEdiagonal = (desRow - startRow) == (startColumn - desColumn);
+    	boolean legalNWdiagonal = (desRow - startRow) == (desColumn - startColumn);
+    	boolean legalSWdiagonal = (startRow - desRow) == (desColumn - startColumn);
+    	boolean legalSEdiagonal = (startRow - desRow) == (startColumn - desColumn);
+    	
+    	strErrorMsg = "The destination is not on the same diagonal line"; //Default error message
+        int newColumn;
 
-            strErrorMsg = "The destination is not on the same diagonal line"; //Default error message
-            int newColumn;
-
-            if (desRow < startRow && desColumn < startColumn) //If moved NW
-            {
-                //The number of cells moved horizontal should equal the number of cells moved vertical
-                if ((desRow - startRow) == (desColumn - startColumn)) {
-
-                    for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
-
-                        newColumn = startColumn - (startRow - newRow);
-
-                        if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
+        switch(moveDir(startRow,startColumn,desRow,desColumn)) {
+        case moveNW:
+        	if (legalNWdiagonal) {
+                for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
+                    newColumn = startColumn - (startRow - newRow);
+                    if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
+                        return false;
                     }
-
-                } else {
-                    return false;
                 }
-
-            } else if (desRow < startRow && desColumn > startColumn) //If moved NE
-            {
-
-                if ((desRow - startRow) == (startColumn - desColumn)) {
-
-                    for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
-
-                        newColumn = startColumn + (startRow - newRow);
-
-                        if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                } else {
-                    return false;
-                }
-
-            } else if (desRow > startRow && desColumn < startColumn) //If moved SW
-            {
-
-                if ((startRow - desRow) == (desColumn - startColumn)) {
-
-                    for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
-
-                        newColumn = startColumn - (newRow - startRow);
-
-                        if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                } else {
-                    return false;
-                }
-
-            } else if (desRow > startRow && desColumn > startColumn) //If moved SE
-            {
-
-                if ((startRow - desRow) == (startColumn - desColumn)) {
-
-                    for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
-
-                        newColumn = startColumn + (newRow - startRow);
-
-                        if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
-                            return false;
-                        }
-
-                    }
-
-                } else {
-                    return false;
-                }
-
-            } else //Not a diagonal move
-            {
-
-                strErrorMsg = "";
+            } else {
                 return false;
+            }break;
+        case moveNE:
+        	if (legalNEdiagonal) {
+		        for (int newRow = (startRow - 1); newRow > desRow; newRow--) {
+		            newColumn = startColumn + (startRow - newRow);
+		            if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
+		                return false;
+		            }
+		        }
+		    } else {
+		        return false;
+		    }break;
+        case moveSW:
+        	if (legalSWdiagonal) {
+		        for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
 
-            }
+		            newColumn = startColumn - (newRow - startRow);
 
+		            if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
+		                return false;
+		            }
+
+		        }
+
+		    } else {
+		        return false;
+		    }break;
+        case moveSE:
+        	if (legalSEdiagonal) {
+		        for (int newRow = (startRow + 1); newRow < desRow; newRow++) {
+		            newColumn = startColumn + (newRow - startRow);
+		            if (!checkAxisMove(newRow, newColumn, playerMatrix)) {
+		                return false;
+		            }
+		        }
+		    } else {
+		        return false;
+		    }break;
+		default:
+			strErrorMsg = "";
+		    return false;
         }
 
         finalDesRow = desRow;
         finalDesColumn = desColumn;
 
         return true;
-
+        
     }
+   
     //Checks the cell to make sure it is empty
 
     private boolean checkAxisMove(int newRow, int newColumn, int[][] playerMatrix) {
-
         if (playerMatrix[newRow][newColumn] != 0) //If not empty
         {
-
             strErrorMsg = "A piece is blocking the route"; //Error message
             return false;
-
         }
-
         return true;
-
     }
 
     public int getDesRow() {

@@ -18,7 +18,7 @@ public class Queen extends BasePiece {
 
         }
 
-        return checkMoveStraightDiagonal(startRow, startColumn, desRow, desColumn, playerMatrix, axis);
+        return axis?moveStraightAxis(startRow, startColumn, desRow, desColumn, playerMatrix):moveDiagonal(startRow, startColumn, desRow, desColumn, playerMatrix);
 
     }
 }
