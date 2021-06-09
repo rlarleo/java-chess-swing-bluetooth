@@ -5,6 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
+
 public class BasicMoveTest {
     Bishop bishop;
     King king;
@@ -61,21 +62,22 @@ public class BasicMoveTest {
     public void PawnBasicMoveTest() {
         assertFalse(pawn.legalMove(0, 0, 0, 0, playerMatrix, 1));	//stay
         
-    	assertTrue(pawn.legalMove(2, 2, 3, 2, playerMatrix, 2));	// up 1
-    	assertTrue(pawn.legalMove(2, 2, 1, 2, playerMatrix, 1));	// down 1
+    	assertTrue(pawn.legalMove(2, 2, 3, 2, playerMatrix, 2));	// down 1
+    	assertTrue(pawn.legalMove(2, 2, 1, 2, playerMatrix, 1));	// up 1
 
     	assertTrue(pawn.legalMove(1, 1, 3, 1, playerMatrix, 2));	// starting point down 2
-    	assertTrue(pawn.legalMove(6, 1, 4, 1, playerMatrix, 1));	// starting point down 2
+    	assertTrue(pawn.legalMove(6, 1, 4, 1, playerMatrix, 1));	// starting point up 2
+    	
+    	assertFalse(pawn.legalMove(6, 1, 3, 1, playerMatrix, 1));	// starting point up 3
 
     	assertFalse(pawn.legalMove(2, 2, 3, 2, playerMatrix, 1));	// Reverse up, down
     	assertFalse(pawn.legalMove(2, 2, 1, 2, playerMatrix, 2));
 
     	assertFalse(pawn.legalMove(2, 2, 2, 3, playerMatrix, 1));	// Vertical
-    	assertFalse(pawn.legalMove(2, 2, 2, 3, playerMatrix, 2));
+    	assertFalse(pawn.legalMove(2, 3, 0, 4, playerMatrix, 1));	// L
     	
-
     	assertFalse(pawn.legalMove(2, 2, 3, 3, playerMatrix, 1));	// 대각선에 비었을 때
-    	assertFalse(pawn.legalMove(2, 2, 3, 3, playerMatrix, 2));
+    	assertFalse(pawn.legalMove(2, 2, 3, 3, playerMatrix, 2));    	
     }
     @Test
     public void BishopBasicMoveTest() {
@@ -115,9 +117,15 @@ public class BasicMoveTest {
 
     @Test
     public void QueenBasicMoveTest() {
-        assertTrue(queen.legalMove(0, 0, 2, 2, playerMatrix));		// 대각선
-        assertTrue(queen.legalMove(0, 0, 2, 0, playerMatrix));		// 세로
-        assertTrue(queen.legalMove(0, 0, 0, 2, playerMatrix));		// 가로
+        assertTrue(queen.legalMove(2, 2, 2, 0, playerMatrix));		// N
+        assertTrue(queen.legalMove(2, 2, 4, 2, playerMatrix));		// S
+        assertTrue(queen.legalMove(2, 2, 0, 2, playerMatrix));		// E
+        assertTrue(queen.legalMove(2, 2, 2, 4, playerMatrix));		// W
+        assertTrue(queen.legalMove(2, 2, 0, 0, playerMatrix));		// NE
+        assertTrue(queen.legalMove(2, 2, 4, 0, playerMatrix));		// NW
+        assertTrue(queen.legalMove(2, 2, 0, 4, playerMatrix));		// SE
+        assertTrue(queen.legalMove(2, 2, 4, 4, playerMatrix));		// SW
+
         assertFalse(queen.legalMove(0, 0, 3, 1, playerMatrix));		// L
         assertFalse(queen.legalMove(0, 0, 0, 0, playerMatrix));		// stay
     }
@@ -127,6 +135,8 @@ public class BasicMoveTest {
     	assertFalse(rock.legalMove(0, 0, 2, 2, playerMatrix));		// 대각선
         assertTrue(rock.legalMove(0, 0, 2, 0, playerMatrix));		// 세로
         assertTrue(rock.legalMove(0, 0, 0, 2, playerMatrix));		// 가로
+        assertTrue(rock.legalMove(2, 0, 0, 0, playerMatrix));		// 위
+        assertTrue(rock.legalMove(0, 2, 0, 0, playerMatrix));		// 아래 
         assertFalse(rock.legalMove(0, 0, 3, 1, playerMatrix));		// L
         assertFalse(rock.legalMove(0, 0, 0, 0, playerMatrix));		// stay
     }
@@ -140,15 +150,21 @@ public class BasicMoveTest {
         assertFalse(pawn.legalMove(5, 4, 4, 3, playerMatrix, 1));
         assertFalse(pawn.legalMove(5, 2, 5, 3, playerMatrix, 1));
         assertFalse(pawn.legalMove(5, 4, 5, 3, playerMatrix, 1));
+        assertFalse(pawn.legalMove(5, 4, 5, 4, playerMatrix, 2));
         
         playerMatrix[1][2] = 1;
+        
         assertFalse(pawn.legalMove(3, 2, 1, 2, playerMatrix, 1));
+        assertFalse(pawn.legalMove(2, 2, 1, 2, playerMatrix, 1));
+
         assertFalse(pawn.legalMove(3, 2, 4, 1, playerMatrix, 2));
 
         assertFalse(pawn.legalMove(2, 2, 1, 1, playerMatrix, 1));
         assertFalse(pawn.legalMove(3, 4, 5, 2, playerMatrix, 2));
+        
     }
     
+    @Test
     public void BishopBlockMoveTest() {
         playerMatrix[1][1] = 1;
         assertFalse(bishop.legalMove(2, 0, 0, 2, playerMatrix));		// NE
@@ -195,5 +211,6 @@ public class BasicMoveTest {
         assertFalse(rock.legalMove(0, 0, 2, 0, playerMatrix));		// 세로
         assertFalse(rock.legalMove(0, 0, 0, 2, playerMatrix));		// 가로
     }
+    
 
 }
