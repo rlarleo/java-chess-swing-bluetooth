@@ -58,15 +58,20 @@ public class BlockMoveTest {
         assertFalse(pawn.legalMove(5, 4, 4, 3, playerMatrix, 1));
         assertFalse(pawn.legalMove(5, 2, 5, 3, playerMatrix, 1));
         assertFalse(pawn.legalMove(5, 4, 5, 3, playerMatrix, 1));
+        assertFalse(pawn.legalMove(5, 4, 5, 4, playerMatrix, 2));
         
         playerMatrix[1][2] = 1;
+        
         assertFalse(pawn.legalMove(3, 2, 1, 2, playerMatrix, 1));
+        assertFalse(pawn.legalMove(2, 2, 1, 2, playerMatrix, 1));
+
         assertFalse(pawn.legalMove(3, 2, 4, 1, playerMatrix, 2));
 
         assertFalse(pawn.legalMove(2, 2, 1, 1, playerMatrix, 1));
         assertFalse(pawn.legalMove(3, 4, 5, 2, playerMatrix, 2));
     }
     
+    @Test
     public void BishopBlockMoveTest() {
         playerMatrix[1][1] = 1;
         assertFalse(bishop.legalMove(2, 0, 0, 2, playerMatrix));		// NE
@@ -113,5 +118,6 @@ public class BlockMoveTest {
         assertFalse(rock.legalMove(0, 0, 2, 0, playerMatrix));		// 세로
         assertFalse(rock.legalMove(0, 0, 0, 2, playerMatrix));		// 가로
     }
+    
 
 }
