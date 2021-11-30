@@ -1,2 +1,2 @@
 # java-chess-swing-bluetooth
-### Chess game with multi-player mode over bluetooth as well as locally
+### 리팩토링 facade, factory, abstract method 패턴 적용
